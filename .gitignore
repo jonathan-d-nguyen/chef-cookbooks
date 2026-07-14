@@ -1,0 +1,15 @@
+# Chef/Berkshelf/Kitchen ignores
+.kitchen/
+.chef/local-mode-cache/
+.chef/trusted_certs/
+local-mode-cache/
+cookbooks/*/tmp/
+/Policyfile.lock.json
+
+# OS/IDE ignores
+.DS_Store
+.vscode/
+.idea/
+*.log
+*.swp
+*~
