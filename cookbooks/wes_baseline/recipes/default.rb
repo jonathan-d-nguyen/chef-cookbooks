@@ -20,7 +20,7 @@ end
 # 2. Remote Access Configuration & Enforcement
 # ==============================================================================
 if platform_family?('debian')
-  # Ensure SSH daemon is running and enabled on Ubuntu Server (e.g. wesmt-pc01)
+  # Ensure SSH daemon is running and enabled on Ubuntu Server (e.g. wesmt-srv01)
   service 'ssh' do
     action [:enable, :start]
   end
@@ -78,5 +78,5 @@ if match
     Chef::Log.warn("Enforcing STRICT Security controls for Management zone Node: #{hostname}")
   end
 else
-  Chef::Log.warn("WARNING: Hostname '#{hostname}' does not match the Unified Hostname Standard (e.g. wesmt-pc01)!")
+  Chef::Log.warn("WARNING: Hostname '#{hostname}' does not match the Unified Hostname Standard (e.g. wesmt-srv01)!")
 end
