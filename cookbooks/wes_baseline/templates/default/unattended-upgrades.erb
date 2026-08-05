@@ -1,0 +1,24 @@
+<%# templates/default/unattended-upgrades.erb
+  Renders /etc/apt/apt.conf.d/50unattended-upgrades from wes_baseline::patching.
+  Variables: @allowed_origins (Array), @auto_reboot (Bool), @auto_reboot_time (String).
+-%>
+// Managed by Chef (wes_baseline::patching). Manual edits are reverted on convergence.
+
+Unattended-Upgrade::Allowed-Origins {
+<% @allowed_origins.each do |origin| -%>
+    "<%= origin %>";
+<% end -%>
+};
+
+// Remove unused automatically installed kernel-related packages after upgrade.
+Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
+Unattended-Upgrade::Remove-Unused-Dependencies "true";
+
+// Reboot policy (host stays up unless explicitly permitted via node attributes).
+Unattended-Upgrade::Automatic-Reboot "<%= @auto_reboot %>";
+<% if @auto_reboot -%>
+Unattended-Upgrade::Automatic-Reboot-Time "<%= @auto_reboot_time %>";
+<% end -%>
+
+// Email + logging left at distro defaults; syslog captured by journald.
+Unattended-Upgrade::SyslogEnable "true";

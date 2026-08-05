@@ -55,7 +55,7 @@ elsif platform_family?('windows')
   registry_key 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' do
     values [
       { name: 'legalnoticecaption', type: :string, data: 'Authorized Westminster Access Only' },
-      { name: 'legalnoticetext', type: :string, data: "This workstation is managed by Chef Automation. All actions are logged. FQDN: #{node['hostname']}.wes.home.jdnguyen.tech" }
+      { name: 'legalnoticetext', type: :string, data: "This workstation is managed by Chef Automation. All actions are logged. FQDN: #{node['hostname']}.wes.home.jdnguyen.tech" },
     ]
     action :create
   end
@@ -70,7 +70,7 @@ hostname = node['hostname']
 match = hostname.match(/^([a-z]{3})([a-z])([a-z])-([a-z]{2,4})(\d{2})$/)
 
 if match
-  site, bld, zone, func, index = match.captures
+  site, _, zone, func, index = match.captures
   Chef::Log.info("Chef parsed hostname: Site=#{site}, Zone=#{zone}, Role=#{func}#{index}")
 
   # Example of dynamic rule allocation based on parsed zone:

@@ -148,6 +148,19 @@ Get up and running quickly with Chef client convergence in local development mod
    sudo chef-client -z -o wes_baseline::default
    ```
 
+3. **Enforce OS patch policy (`wes_baseline::patching`)**
+   Configures unattended security upgrades on Debian/Ubuntu and Windows Update AU
+   policy on Windows. Config is drift-corrected on every run; installation is gated
+   behind an attribute so routine convergence stays non-disruptive.
+   ```sh
+   # Enforce patch CONFIG only (safe — no packages installed):
+   sudo chef-client -z -o wes_baseline::patching
+
+   # Maintenance window — actually apply pending security updates:
+   sudo chef-client -z -o wes_baseline::patching \
+     -j <(echo '{"wes_baseline":{"patching":{"apply_updates":true}}}')
+   ```
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### 3.2. Testing & Verification
