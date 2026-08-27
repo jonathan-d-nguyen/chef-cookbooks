@@ -1,0 +1,6 @@
+name: wes_baseline-default
+title: wes_baseline::default Compliance Profile
+maintainer: Jonathan Nguyen
+summary: Verifies baseline packages, remote access services, and security banners
+  are correctly applied by wes_baseline::default.
+version: 0.1.0

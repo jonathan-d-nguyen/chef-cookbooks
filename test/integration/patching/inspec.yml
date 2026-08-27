@@ -1,0 +1,6 @@
+name: wes_baseline-patching
+title: wes_baseline::patching Compliance Profile
+maintainer: Jonathan Nguyen
+summary: Verifies OS patch toolchain and configuration files are correctly enforced
+  by wes_baseline::patching.
+version: 0.1.0

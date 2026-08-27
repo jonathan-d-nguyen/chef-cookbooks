@@ -1,0 +1,55 @@
+# .kitchen.yml - Test Kitchen Configuration
+#
+# Intent: Define local sandbox environments for converging and verifying
+#         wes_baseline recipes before any code reaches the Chef Server.
+# Role: Used by `kitchen test` on the developer workstation to spin up a
+#       temporary Docker container, run chef-client (zero mode), execute
+#       InSpec verification tests, then destroy the container.
+# Dependencies: Chef Workstation, Docker Desktop (Mac) or Docker Engine (Linux).
+# Usage:
+#   kitchen list                   # show suite/platform matrix
+#   kitchen test                   # full cycle: create→converge→verify→destroy
+#   kitchen converge default-ubuntu-2204   # converge only (leave running)
+#   kitchen verify   default-ubuntu-2204   # run InSpec only (against running instance)
+#   kitchen destroy                # tear down all instances
+
+driver:
+  name: docker
+  use_sudo: false
+  privileged: true        # required for systemd service management inside container
+
+provisioner:
+  name: chef_zero
+  always_update_cookbooks: true
+  cookbook_path:
+    - cookbooks
+
+verifier:
+  name: inspec
+
+platforms:
+  - name: ubuntu-22.04
+    driver:
+      image: ubuntu:22.04
+      platform: ubuntu
+
+suites:
+  - name: default
+    run_list:
+      - recipe[wes_baseline::default]
+    verifier:
+      inspec_tests:
+        - test/integration/default
+    attributes: {}
+
+  - name: patching
+    run_list:
+      - recipe[wes_baseline::patching]
+    verifier:
+      inspec_tests:
+        - test/integration/patching
+    attributes:
+      wes_baseline:
+        patching:
+          enforce_config: true
+          apply_updates: false
