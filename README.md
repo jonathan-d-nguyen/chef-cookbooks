@@ -161,6 +161,34 @@ Get up and running quickly with Chef client convergence in local development mod
      -j <(echo '{"wes_baseline":{"patching":{"apply_updates":true}}}')
    ```
 
+4. **Capture a node inventory baseline (`wes_baseline::inventory`)**
+   Reads Ohai-collected system facts (OS, kernel, CPU, memory, network) and writes
+   a structured JSON snapshot to disk on every convergence. The report is idempotent —
+   the file only updates if the node state actually changed.
+   ```sh
+   # Capture current system baseline:
+   sudo chef-client -z -o wes_baseline::inventory
+
+   # Report location:
+   #   Linux   → /var/log/chef/node-inventory.json
+   #   Windows → C:\ProgramData\Chef\node-inventory.json
+
+   # View the snapshot:
+   cat /var/log/chef/node-inventory.json
+   ```
+
+   Example output:
+   ```json
+   {
+     "captured_at": "2026-08-26T00:00:00Z",
+     "managed_by": "Chef Infra (wes_baseline::inventory)",
+     "identity": { "hostname": "wesmt-srv01", "fqdn": "wesmt-srv01.wes.home.jdnguyen.tech" },
+     "platform": { "platform": "ubuntu", "version": "22.04", "kernel": "5.15.0-91-generic" },
+     "network": { "ipaddress": "10.10.20.11", "default_gateway": "10.10.20.1" },
+     "hardware": { "cpu_count": 4, "memory_total_kb": "16384000kB" }
+   }
+   ```
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### 3.2. Testing & Verification

@@ -15,7 +15,7 @@ default_source :supermarket
 default_source :chef_repo, 'cookbooks'
 
 # The run-list defines the order in which recipes are executed on the node
-run_list 'wes_baseline::default'
+run_list 'wes_baseline::default', 'wes_baseline::patching', 'wes_baseline::inventory'
 
 # Specify the local cookbook we are developing
 cookbook 'wes_baseline', path: 'cookbooks/wes_baseline'

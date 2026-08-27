@@ -9,7 +9,7 @@ maintainer       'Jonathan Nguyen'
 maintainer_email 'jonathan@jdnguyen.tech'
 license          'All Rights Reserved'
 description      'Installs and configures baseline security and packages for Westminster nodes'
-version          '0.2.0'
+version          '0.3.0'
 chef_version     '>= 16.0'
 
 supports 'ubuntu', '>= 20.04'
