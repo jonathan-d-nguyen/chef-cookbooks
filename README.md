@@ -193,18 +193,71 @@ Get up and running quickly with Chef client convergence in local development mod
 
 ### 3.2. Testing & Verification
 
-1. **Drift Remediation Test**
-   To test the configuration enforcement:
-   ```sh
-   # 1. Modify the baseline banner manually
-   sudo echo "Unauthorized change" > /etc/motd
+#### Test Kitchen (Local Sandbox)
 
-   # 2. Re-run Chef Client
-   sudo chef-client -z -o wes_baseline
+`.kitchen.yml` defines two suites against Ubuntu 22.04 Docker containers. Run
+the full cycle (create → converge → verify → destroy) or individual phases:
 
-   # 3. Verify that the correct template state was enforced
-   cat /etc/motd
-   ```
+```sh
+# Prerequisites: Chef Workstation + Docker Desktop
+gem install kitchen-docker
+
+# Show suite/platform matrix
+kitchen list
+
+# Full test cycle for all suites
+kitchen test
+
+# Target a single suite
+kitchen test default-ubuntu-2204
+kitchen test patching-ubuntu-2204
+
+# Iterative development — converge, inspect, then verify
+kitchen converge default-ubuntu-2204
+kitchen login   default-ubuntu-2204   # SSH into the running container
+kitchen verify  default-ubuntu-2204
+kitchen destroy default-ubuntu-2204
+```
+
+| Suite | Run List | InSpec Profile |
+|---|---|---|
+| `default` | `wes_baseline::default` | `test/integration/default/` |
+| `patching` | `wes_baseline::patching` | `test/integration/patching/` |
+
+#### InSpec Compliance Controls
+
+Each recipe has a corresponding InSpec profile that verifies the expected end
+state. Controls map 1:1 to recipe resource blocks.
+
+**`default` suite controls** (`test/integration/default/controls/baseline_test.rb`):
+
+| Control | Checks |
+|---|---|
+| `baseline-packages` | `git` and `curl` are installed |
+| `baseline-ssh` | SSH daemon is enabled and running (Debian) |
+| `baseline-motd` | `/etc/motd` exists, root-owned, contains legal warning text |
+
+**`patching` suite controls** (`test/integration/patching/controls/patching_test.rb`):
+
+| Control | Checks |
+|---|---|
+| `patching-packages` | `unattended-upgrades` and `apt-listchanges` installed |
+| `patching-upgrade-config` | `/etc/apt/apt.conf.d/50unattended-upgrades` exists, security-only origins |
+| `patching-auto-upgrades` | `/etc/apt/apt.conf.d/20auto-upgrades` schedules daily download + upgrade |
+| `patching-service` | `unattended-upgrades` service enabled and running |
+
+#### Drift Remediation Test
+
+```sh
+# 1. Corrupt the banner manually
+sudo bash -c 'echo "Unauthorized change" > /etc/motd'
+
+# 2. Re-converge — Chef detects and corrects the drift
+sudo chef-client -z -o wes_baseline
+
+# 3. Confirm the banner was restored
+cat /etc/motd
+```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -224,7 +277,21 @@ Get up and running quickly with Chef client convergence in local development mod
 
 ### 3.4. CI/CD Pipeline
 
-*Planned Integration:* Automated linting and syntax validations using `cookstyle` combined with Test Kitchen and Docker containers on pushes.
+The intended pipeline enforces a quality gate on every push before code reaches the Chef Server:
+
+```
+git push → cookstyle (lint) → ChefSpec (unit) → kitchen test (integration + InSpec) → chef push [policy_group]
+```
+
+Quality tools:
+
+| Tool | Stage | Command |
+|---|---|---|
+| `cookstyle` | Lint / style | `cookstyle cookbooks/` |
+| `ChefSpec` | Unit | `rspec` |
+| `kitchen test` | Integration + InSpec | `kitchen test` |
+
+*GitHub Actions workflow and Gitea runner integration are on the roadmap.*
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
