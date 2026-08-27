@@ -4,7 +4,8 @@
 .chef/trusted_certs/
 local-mode-cache/
 cookbooks/*/tmp/
-/Policyfile.lock.json
+# Policyfile.lock.json is intentionally tracked — it is the source of truth
+# for pinned cookbook versions and SHA checksums (analogous to Gemfile.lock).
 
 # Large install media / build artifacts (keep out of git — use a release/asset store)
 *.iso

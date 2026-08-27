@@ -1,0 +1,54 @@
+{
+  "revision_id": "782c701dc0a474ab9dff30fd7486920579feb06b11c31e94108ff13c9ec82a0a",
+  "name": "wes_baseline",
+  "run_list": [
+    "recipe[wes_baseline::default]",
+    "recipe[wes_baseline::patching]",
+    "recipe[wes_baseline::inventory]"
+  ],
+  "included_policy_locks": [
+
+  ],
+  "cookbook_locks": {
+    "wes_baseline": {
+      "version": "0.3.0",
+      "identifier": "60fce8589d900e08ea0f7158fe3976e4055068f6",
+      "dotted_decimal_identifier": "27299672613556238.2509151860751929.130721713776886",
+      "source": "cookbooks/wes_baseline",
+      "cache_key": null,
+      "scm_info": {
+        "scm": "git",
+        "remote": "https://github.com/jonathan-d-nguyen/chef-cookbooks.git",
+        "revision": "dd13bab5a8c3d849e10349a44252b4facfe2a109",
+        "working_tree_clean": false,
+        "published": true,
+        "synchronized_remote_branches": [
+          "gitea/main",
+          "origin/main"
+        ]
+      },
+      "source_options": {
+        "path": "cookbooks/wes_baseline"
+      }
+    }
+  },
+  "default_attributes": {
+
+  },
+  "override_attributes": {
+
+  },
+  "solution_dependencies": {
+    "Policyfile": [
+      [
+        "wes_baseline",
+        ">= 0.0.0"
+      ]
+    ],
+    "dependencies": {
+      "wes_baseline (0.3.0)": [
+
+      ]
+    }
+  }
+}

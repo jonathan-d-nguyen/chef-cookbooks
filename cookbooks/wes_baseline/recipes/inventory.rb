@@ -16,9 +16,11 @@
 # 1. Resolve platform-specific output path
 # ==============================================================================
 report_dir  = platform_family?('windows') ? 'C:\ProgramData\Chef' : '/var/log/chef'
-report_path = platform_family?('windows') \
-  ? "#{report_dir}\\node-inventory.json" \
-  : "#{report_dir}/node-inventory.json"
+report_path = if platform_family?('windows')
+                "#{report_dir}\\node-inventory.json"
+              else
+                "#{report_dir}/node-inventory.json"
+              end
 
 # ==============================================================================
 # 2. Ensure the report directory exists
@@ -40,37 +42,37 @@ end
 #    collected and available as node[] before any recipe code executes.
 # ==============================================================================
 inventory = {
-  'captured_at'      => Time.now.utc.iso8601,
-  'managed_by'       => 'Chef Infra (wes_baseline::inventory)',
+  'captured_at' => Time.now.utc.iso8601,
+  'managed_by' => 'Chef Infra (wes_baseline::inventory)',
   'identity' => {
-    'hostname'         => node['hostname'],
-    'fqdn'             => node['fqdn'],
-    'domain'           => node['domain'],
+    'hostname' => node['hostname'],
+    'fqdn' => node['fqdn'],
+    'domain' => node['domain'],
   },
   'platform' => {
-    'os'               => node['os'],
-    'family'           => node['platform_family'],
-    'platform'         => node['platform'],
-    'version'          => node['platform_version'],
-    'kernel'           => node['kernel']['release'],
-    'architecture'     => node['kernel']['machine'],
+    'os' => node['os'],
+    'family' => node['platform_family'],
+    'platform' => node['platform'],
+    'version' => node['platform_version'],
+    'kernel' => node['kernel']['release'],
+    'architecture' => node['kernel']['machine'],
   },
   'network' => {
-    'ipaddress'        => node['ipaddress'],
-    'macaddress'       => node['macaddress'],
-    'default_gateway'  => node['network']['default_gateway'],
-    'default_interface'=> node['network']['default_interface'],
+    'ipaddress' => node['ipaddress'],
+    'macaddress' => node['macaddress'],
+    'default_gateway' => node['network']['default_gateway'],
+    'default_interface' => node['network']['default_interface'],
   },
   'hardware' => {
-    'cpu_count'        => node['cpu']['total'],
-    'cpu_model'        => node.dig('cpu', '0', 'model_name') || node.dig('cpu', '0', 'brand_string'),
-    'memory_total_kb'  => node['memory']['total'],
+    'cpu_count' => node['cpu']['total'],
+    'cpu_model' => node.dig('cpu', '0', 'model_name') || node.dig('cpu', '0', 'brand_string'),
+    'memory_total_kb' => node['memory']['total'],
   },
   'chef' => {
-    'chef_version'     => node['chef_packages']['chef']['version'],
-    'policy_name'      => node['policy_name'],
-    'policy_group'     => node['policy_group'],
-    'run_list'         => node.run_list.map(&:to_s),
+    'chef_version' => node['chef_packages']['chef']['version'],
+    'policy_name' => node['policy_name'],
+    'policy_group' => node['policy_group'],
+    'run_list' => node.run_list.map(&:to_s),
   },
 }
 
